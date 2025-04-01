@@ -8,7 +8,7 @@ const API_BASE_URL = "https://api.liferay.cloud";
  */
 export async function getCollaboratorId(project, email) {
   const headers = {
-    Authorization: getAuthHeader(),
+    Authorization: await getAuthHeader(),
     'Content-Type': 'application/json'
   };
 
@@ -33,7 +33,7 @@ export async function getCollaboratorId(project, email) {
  */
 export async function updateRole(project, userId, role) {
   const headers = {
-    Authorization: getAuthHeader(),
+    Authorization: await getAuthHeader(),
     'Content-Type': 'application/json'
   };
 
@@ -55,7 +55,7 @@ export async function updateRole(project, userId, role) {
  */
 export async function removeUserByEmail(project, email) {
   const headers = {
-    Authorization: getAuthHeader(),
+    Authorization: await getAuthHeader(),
     'Content-Type': 'application/json'
   };
 
@@ -67,18 +67,16 @@ export async function removeUserByEmail(project, email) {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to remove user: ${response.statusText}`);
+    throw new Error(`Failed to remove user: ${response.status} - ${response.statusText}`);
   }
 
   return `User with email "${email}" removed successfully.`;
 }
 
-
 /**
  * Atualiza o papel de um colaborador usando apenas o email.
- * Essa é a função de mais alto nível, ideal para uso externo.
  */
 export async function updateUserRoleByEmail(project, email, role) {
   const userId = await getCollaboratorId(project, email);
-  return await updateRole(project, userId, role);
+  return updateRole(project, userId, role);
 }

@@ -13,7 +13,7 @@ export default async function listUsersCommand(args) {
   }
 
   const headers = {
-    Authorization: getAuthHeader(),
+    Authorization: await getAuthHeader(),
     'Content-Type': 'application/json'
   };
 

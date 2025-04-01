@@ -1,10 +1,10 @@
 # dxp-cloud-api-client
 
-🚀 A CLI tool and programmable interface to interact with the [Liferay DXP Cloud API](https://api.liferay.cloud), supporting Basic Auth and `LCP CLI` authentication strategies.
+🚀 A CLI tool and programmable interface to interact with the Liferay DXP Cloud API, supporting secure Basic Auth for automation.
 
 ## ✅ Features
 
-- 🔐 Supports **Basic Auth** and **LCP CLI token-based** authentication
+- 🔐 Auth via Basic Auth with token retrieval from `/user`
 - 👥 Manage collaborators: update roles, remove users, list users
 - 📦 List all accessible DXP Cloud projects
 - 🔌 Easily pluggable into other systems (e.g. IGA solutions)
@@ -25,27 +25,16 @@ cp .env.example .env
 
 ## 🔐 Configuration
 
-Edit the `.env` file to choose your preferred auth strategy:
-
-### Basic Auth (read-only mode)
-
-```env
-DXP_AUTH_MODE=basic
-DXP_CLOUD_USERNAME=my.user@company.com
-DXP_CLOUD_PASSWORD=superSecurePassword
-```
-
-> ⚠️ **Important:** Basic Auth currently only supports `GET` requests in the Liferay DXP Cloud API.  
-> To perform `POST`, `PATCH`, or `DELETE` operations, you must use the `lcp` authentication mode.
-
-### LCP CLI Token (recommended for automation and write operations)
+Edit the `.env` file to define your credentials:
 
 ```env
 DXP_AUTH_MODE=lcp
 DXP_CLOUD_USERNAME=my.user@company.com
 DXP_CLOUD_PASSWORD=superSecurePassword
-# Requires the LCP CLI to be installed and in PATH
 ```
+
+> ✅ **Note:** This implementation no longer requires the `lcp` CLI.  
+> It uses Basic Auth via the `/user` endpoint to fetch a valid token for all operations (GET, PATCH, DELETE, etc.).
 
 ---
 
@@ -59,17 +48,17 @@ node src/index.js <command> [...args]
 
 ### Available commands
 
-| Command           | Description                                       |
-|------------------|---------------------------------------------------|
-| `update-role`     | Update a collaborator's role                     |
-| `remove-user`     | Remove a collaborator from a project             |
-| `list-users`      | List all users and their roles in a project      |
-| `list-projects`   | List all accessible projects with status/health  |
-| `help`            | Show all available commands                      |
+| Command         | Description                                       |
+|----------------|---------------------------------------------------|
+| `update-role`   | Update a collaborator's role                     |
+| `remove-user`   | Remove a collaborator from a project             |
+| `list-users`    | List all users and their roles in a project      |
+| `list-projects` | List all accessible projects with status/health  |
+| `help`          | Show all available commands                      |
 
 ---
 
-### 💡 Examples
+## 💡 Examples
 
 Update user role:
 
@@ -113,9 +102,7 @@ Using `dxp-cloud-api-client`, the same system can automatically:
 - 📉 Downgrade their role instead of removal (e.g., from `admin` to `viewer`)
 - ✅ Ensure compliance and zero-trust access enforcement
 
-### Example: Automatic Role Update or Removal
-
-When a user is flagged as **inactive** in the identity system:
+### Example
 
 ```bash
 # Downgrade role to 'viewer'
@@ -125,13 +112,13 @@ node src/index.js update-role dxp-prod john.doe@company.com viewer
 node src/index.js remove-user dxp-prod john.doe@company.com
 ```
 
-This script can be:
+This can be:
 
 - ✅ Scheduled via cron
 - 🔌 Integrated into an IGA workflow (e.g., SailPoint, One Identity, Okta Workflows)
 - 🔐 Triggered from a CI/CD pipeline or internal microservice
 
-### Benefits:
+### Benefits
 
 - 🛡️ Enforces security by removing unnecessary DXP Cloud access
 - ⚙️ Keeps roles and project memberships in sync with internal identity policies

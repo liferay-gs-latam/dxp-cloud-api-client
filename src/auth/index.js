@@ -1,18 +1,15 @@
-import * as basicAuth from './basic.js';
 import * as lcpAuth from './lcp.js';
 
 /**
- * Retorna o header de autorização com base na estratégia definida
- * em DXP_AUTH_MODE (.env).
+ * Returns the authorization header using the selected auth mode.
+ * Currently, only 'lcp' is supported, using Basic Auth to retrieve a token via /user.
  */
-export function getAuthHeader() {
-  const mode = process.env.DXP_AUTH_MODE?.toLowerCase() || 'basic';
+export async function getAuthHeader() {
+  const mode = process.env.DXP_AUTH_MODE?.toLowerCase() || 'lcp';
 
-  if (mode === 'basic') {
-    return basicAuth.getAuthHeader();
-  } else if (mode === 'lcp') {
-    return lcpAuth.getAuthHeader();
+  if (mode === 'lcp') {
+    return await lcpAuth.getAuthHeader();
   } else {
-    throw new Error(`Unsupported auth mode: ${mode}`);
+    throw new Error(`Unsupported auth mode: ${mode}. Currently, only 'lcp' is supported.`);
   }
 }

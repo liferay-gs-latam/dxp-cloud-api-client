@@ -7,7 +7,7 @@ const API_BASE_URL = "https://api.liferay.cloud";
 
 export default async function listProjectsCommand() {
   const headers = {
-    Authorization: getAuthHeader(),
+    Authorization: await getAuthHeader(), // <- aqui é essencial
     'Content-Type': 'application/json'
   };
 
@@ -30,7 +30,7 @@ export default async function listProjectsCommand() {
     console.log(`- ${project.projectId}`);
     console.log(`    Status        : ${project.status}`);
     console.log(`    Health        : ${project.health}`);
-    console.log(`    Repository    : ${project.metadata.repository || 'N/A'}`);
+    console.log(`    Repository    : ${project.metadata?.repository || 'N/A'}`);
     console.log(`    Region        : ${project.cluster || 'N/A'}`);
     console.log(`    Bucket Name   : ${project.persistentStorageBucketName || 'N/A'}`);
     console.log(`    Load Balancer : ${project.loadBalancerIp || 'N/A'}`);
